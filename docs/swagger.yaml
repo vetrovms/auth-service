@@ -1,0 +1,189 @@
+basePath: /
+definitions:
+  request.AuthRequest:
+    properties:
+      email:
+        maxLength: 255
+        type: string
+      password:
+        maxLength: 255
+        minLength: 5
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  response.DocLoginResponse200:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        additionalProperties:
+          type: string
+        example:
+          jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Mzc3OTM5NzcsInN1YiI6NX0.Y90d9seg_kX3zH1JeiTqegMtVAWAqHE74teYF_4Zpxo
+        type: object
+      errors:
+        items:
+          type: string
+        type: array
+    type: object
+  response.DocLoginResponse422:
+    properties:
+      code:
+        example: 422
+        type: integer
+      data:
+        additionalProperties:
+          type: string
+        type: object
+      errors:
+        example:
+        - email не знайдено
+        - password обов'язкове поле
+        items:
+          type: string
+        type: array
+    type: object
+  response.DocLoginResponse500:
+    properties:
+      code:
+        example: 500
+        type: integer
+      data:
+        additionalProperties:
+          type: string
+        type: object
+      errors:
+        example:
+        - щось пішло не так
+        items:
+          type: string
+        type: array
+    type: object
+  response.DocRegisterResponse200:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        additionalProperties:
+          type: string
+        type: object
+      errors:
+        items:
+          type: string
+        type: array
+    type: object
+  response.DocRegisterResponse422:
+    properties:
+      code:
+        example: 422
+        type: integer
+      data:
+        additionalProperties:
+          type: string
+        type: object
+      errors:
+        example:
+        - email вже зареєстровано
+        - password обов'язкове поле
+        items:
+          type: string
+        type: array
+    type: object
+  response.DocRegisterResponse500:
+    properties:
+      code:
+        example: 500
+        type: integer
+      data:
+        additionalProperties:
+          type: string
+        type: object
+      errors:
+        example:
+        - щось пішло не так
+        items:
+          type: string
+        type: array
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: 127.0.0.1:8001
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Authorization service.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Authorization service.
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Логін
+      parameters:
+      - description: login request (email, password)
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.AuthRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.DocLoginResponse200'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.DocLoginResponse422'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.DocLoginResponse500'
+      summary: Логін
+      tags:
+      - users
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Реєстрація нового користувача
+      parameters:
+      - description: login request (email, password)
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.AuthRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.DocRegisterResponse200'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.DocRegisterResponse422'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.DocRegisterResponse500'
+      summary: Реєстрація нового користувача
+      tags:
+      - users
+swagger: "2.0"

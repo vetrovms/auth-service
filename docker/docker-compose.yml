@@ -1,0 +1,43 @@
+services:
+  postgres_auth:
+    container_name: postgres_auth
+    image: postgres:latest
+    restart: always
+    networks:
+     - go-news-api
+    environment:
+      POSTGRES_PASSWORD: ${AUTH_POSTGRES_PASSWORD}
+      POSTGRES_USER: ${AUTH_POSTGRES_USER}
+      POSTGRES_DATABASE: ${AUTH_POSTGRES_DATABASE}
+      POSTGRES_DB: ${AUTH_POSTGRES_DATABASE}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s  
+  webserver_auth:
+    container_name: webserver_auth
+    restart: always
+    ports:
+      - ${AUTH_WEB_PORT}:${AUTH_WEB_PORT}
+    build:
+      context: .
+      args:
+        ARG_AUTH_DB_DSN: ${AUTH_DB_DSN}
+        ARG_AUTH_DB_URL: ${AUTH_DB_URL}
+        ARG_AUTH_WEB_PORT: ${AUTH_WEB_PORT}
+        ARG_AUTH_LOG_PATH: ${AUTH_LOG_PATH}
+        ARG_AUTH_SECRET: ${AUTH_SECRET}
+    depends_on:
+      postgres_auth:
+        condition: service_healthy
+        restart: true
+    logging:
+      options:
+        max-size: 10m
+    networks:
+      go-news-api:
+networks:
+  go-news-api:
+    driver: bridge
