@@ -11,20 +11,24 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// IRegisterService Інтерфейс сервіса реєстрації.
 type IRegisterService interface {
 	Register(ctx context.Context, r request.AuthRequest) error
 }
 
+// RegisterService Сервіс реєстрації.
 type RegisterService struct {
 	repo repository.IRepo
 }
 
+// NewRegisterService Конструктор сервіса реєстрації.
 func NewRegisterService(repo repository.IRepo) RegisterService {
 	return RegisterService{
 		repo: repo,
 	}
 }
 
+// Register Виконує реєстрацію користувача.
 func (s *RegisterService) Register(ctx context.Context, r request.AuthRequest) error {
 	bs, err := bcrypt.GenerateFromPassword([]byte(r.Password), bcrypt.DefaultCost)
 	if err != nil {
