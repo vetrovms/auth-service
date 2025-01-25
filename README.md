@@ -29,7 +29,9 @@ export AUTH_POSTGRES_USER="postgres" && \
 export AUTH_POSTGRES_DATABASE="gousers" && \
 export AUTH_WEB_PORT=8001 && \
 export AUTH_LOG_PATH="/app/log/log.json" && \
-export AUTH_DB_DSN="user=postgres password=postgres host=postgres_auth port=5433 dbname=gousers sslmode=disable" && \
-export AUTH_DB_URL="postgres://postgres:postgres@postgres_auth:5433/gousers?sslmode=disable" && \
-export AUTH_SECRET="mysecretkey"
+export AUTH_DB_DSN="user=postgres password=postgres host=postgres_auth port=5432 dbname=gousers sslmode=disable" && \
+export AUTH_DB_URL="postgres://postgres:postgres@postgres_auth:5432/gousers?sslmode=disable" && \
+export AUTH_SECRET="mysecretkey" && \
+export POSTGRES_USER="postgres" && \
+export POSTGRES_DB="gousers"
 ```

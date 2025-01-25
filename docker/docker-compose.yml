@@ -4,7 +4,7 @@ services:
     image: postgres:latest
     restart: always
     networks:
-     - go-news-api
+     - go-auth
     environment:
       POSTGRES_PASSWORD: ${AUTH_POSTGRES_PASSWORD}
       POSTGRES_USER: ${AUTH_POSTGRES_USER}
@@ -37,7 +37,7 @@ services:
       options:
         max-size: 10m
     networks:
-      go-news-api:
+      go-auth:
 networks:
-  go-news-api:
+  go-auth:
     driver: bridge
