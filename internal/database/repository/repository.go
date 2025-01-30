@@ -27,6 +27,13 @@ func (r *Repo) UserExistsByEmail(ctx context.Context, email string) (bool, error
 	return exists, err
 }
 
+// UserExistsByEmail Перевірка існування користувача за id.
+func (r *Repo) UserExistsById(ctx context.Context, id int) (bool, error) {
+	var exists bool
+	err := r.db.WithContext(ctx).Model(models.User{}).Select("count(*) > 0").Where("id = ?", id).Find(&exists).Error
+	return exists, err
+}
+
 // GetUserByEmail Повертає користувача за email.
 func (r *Repo) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	var user models.User

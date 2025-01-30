@@ -53,6 +53,7 @@ func main() {
 	app := fiber.New()
 	app.Post("/register", controller.Register)
 	app.Post("/login", controller.Login)
+	app.Post("/retrospective", controller.Retrospective)
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	logger.Log().Fatal(app.Listen(":" + config.NewEnv().WebPort))

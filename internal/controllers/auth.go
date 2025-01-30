@@ -14,6 +14,7 @@ import (
 type validator interface {
 	ValidateRegister(ctx context.Context, r request.AuthRequest) ([]string, error)
 	ValidateLogin(ctx context.Context, r request.AuthRequest) ([]string, error)
+	ValidateRetrospective(ctx context.Context, r request.RetrospectiveRequest) (bool, error)
 }
 
 // registrator Інтерфейс сервіса реєстрації.
@@ -151,5 +152,26 @@ func (a *AuthController) Login(c *fiber.Ctx) error {
 	}
 
 	res := response.NewResponse(fiber.StatusOK, []string{}, fiber.Map{"jwt": *jwt})
+	return c.Status(fiber.StatusOK).JSON(res)
+}
+
+func (a *AuthController) Retrospective(c *fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	var r request.RetrospectiveRequest
+	if err := c.BodyParser(&r); err != nil {
+		logger.Log().Info(err)
+		r := response.NewResponse(fiber.StatusUnprocessableEntity, []string{err.Error()}, nil)
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(r)
+	}
+
+	ok, err := a.validation.ValidateRetrospective(ctx, r)
+	if err != nil {
+		res := response.NewResponse(fiber.StatusInternalServerError, []string{err.Error()}, nil)
+		return c.Status(fiber.StatusInternalServerError).JSON(res)
+	}
+
+	res := response.NewResponse(fiber.StatusOK, []string{}, fiber.Map{"result": ok})
 	return c.Status(fiber.StatusOK).JSON(res)
 }

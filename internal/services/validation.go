@@ -1,6 +1,7 @@
 package services
 
 import (
+	"auth/internal/config"
 	"auth/internal/logger"
 	"auth/internal/request"
 	"context"
@@ -9,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -66,6 +68,36 @@ func (v *ValidationService) ValidateLogin(ctx context.Context, r request.AuthReq
 	}
 	msgs := validate(r)
 	return msgs, nil
+}
+
+func (v *ValidationService) ValidateRetrospective(ctx context.Context, r request.RetrospectiveRequest) (bool, error) {
+	token, err := jwt.Parse(r.Jwt, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(config.NewEnv().SecretKey), nil
+	})
+
+	if err != nil {
+		return false, err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok {
+		userId := claims["sub"]
+		exists, err := v.repo.UserExistsById(ctx, int(userId.(float64)))
+
+		if err != nil {
+			return false, err
+		}
+
+		if !exists {
+			return false, nil
+		}
+
+		return true, nil
+	}
+
+	return false, nil
 }
 
 func validate(r interface{}) []string {
