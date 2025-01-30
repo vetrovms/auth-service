@@ -11,11 +11,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// IRegisterService Інтерфейс сервіса реєстрації.
-type IRegisterService interface {
-	Register(ctx context.Context, r request.AuthRequest) error
-}
-
 // RegisterService Сервіс реєстрації.
 type RegisterService struct {
 	repo repository.IRepo

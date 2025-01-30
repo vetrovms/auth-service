@@ -4,39 +4,54 @@ import (
 	"auth/internal/logger"
 	"auth/internal/request"
 	"auth/internal/response"
-	"auth/internal/services"
 	"context"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
 
+// validation Інтерфейс сервіса реєстрації.
+type validator interface {
+	ValidateRegister(ctx context.Context, r request.AuthRequest) ([]string, error)
+	ValidateLogin(ctx context.Context, r request.AuthRequest) ([]string, error)
+}
+
+// registrator Інтерфейс сервіса реєстрації.
+type registrator interface {
+	Register(ctx context.Context, r request.AuthRequest) error
+}
+
+// login Інтерфейс сервіса логіна.
+type loginer interface {
+	Login(ctx context.Context, r request.AuthRequest) (*string, error)
+}
+
 // AuthController контролер аутентифікації.
 type AuthController struct {
-	validation services.IValidationService
-	register   services.IRegisterService
-	login      services.ILoginService
+	validation validator
+	register   registrator
+	login      loginer
 }
 
 // ConfigAuthController Колбек для налаштування контролера.
 type ConfigAuthController func(c *AuthController)
 
 // WithValidationService Повертає колбек ConfigAuthController.
-func WithValidationService(s *services.ValidationService) func(c *AuthController) {
+func WithValidationService(s validator) func(c *AuthController) {
 	return func(c *AuthController) {
 		c.validation = s
 	}
 }
 
 // WithRegisterService Повертає колбек ConfigAuthController.
-func WithRegisterService(s *services.RegisterService) func(c *AuthController) {
+func WithRegisterService(s registrator) func(c *AuthController) {
 	return func(c *AuthController) {
 		c.register = s
 	}
 }
 
 // WithLoginService Повертає колбек ConfigAuthController.
-func WithLoginService(s *services.LoginService) func(c *AuthController) {
+func WithLoginService(s loginer) func(c *AuthController) {
 	return func(c *AuthController) {
 		c.login = s
 	}

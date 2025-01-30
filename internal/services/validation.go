@@ -29,11 +29,6 @@ const (
 	SomethingWentWrongMsg = "щось пішло не так, спробуйте пізніше"
 )
 
-type IValidationService interface {
-	ValidateRegister(ctx context.Context, r request.AuthRequest) ([]string, error)
-	ValidateLogin(ctx context.Context, r request.AuthRequest) ([]string, error)
-}
-
 type ValidationService struct {
 	repo repository.IRepo
 }

@@ -15,11 +15,6 @@ import (
 // tokenDuration Час життя токена авторизації.
 const tokenDuration = 12 * time.Hour
 
-// ILoginService Інтерфейс сервіса логіна.
-type ILoginService interface {
-	Login(ctx context.Context, r request.AuthRequest) (*string, error)
-}
-
 // LoginService Сервіс логіна.
 type LoginService struct {
 	repo repository.IRepo
