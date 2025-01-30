@@ -2,7 +2,6 @@ package services
 
 import (
 	"auth/internal/config"
-	"auth/internal/database/repository"
 	"auth/internal/logger"
 	"auth/internal/request"
 	"context"
@@ -17,11 +16,11 @@ const tokenDuration = 12 * time.Hour
 
 // LoginService Сервіс логіна.
 type LoginService struct {
-	repo repository.IRepo
+	repo repositorer
 }
 
 // NewLoginService Конструктор сервіса логіна.
-func NewLoginService(repo repository.IRepo) LoginService {
+func NewLoginService(repo repositorer) LoginService {
 	return LoginService{
 		repo: repo,
 	}

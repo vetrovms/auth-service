@@ -1,7 +1,6 @@
 package services
 
 import (
-	"auth/internal/database/repository"
 	"auth/internal/logger"
 	"auth/internal/models"
 	"auth/internal/request"
@@ -13,11 +12,11 @@ import (
 
 // RegisterService Сервіс реєстрації.
 type RegisterService struct {
-	repo repository.IRepo
+	repo repositorer
 }
 
 // NewRegisterService Конструктор сервіса реєстрації.
-func NewRegisterService(repo repository.IRepo) RegisterService {
+func NewRegisterService(repo repositorer) RegisterService {
 	return RegisterService{
 		repo: repo,
 	}

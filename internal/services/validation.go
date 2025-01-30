@@ -1,7 +1,6 @@
 package services
 
 import (
-	"auth/internal/database/repository"
 	"auth/internal/logger"
 	"auth/internal/request"
 	"context"
@@ -30,10 +29,10 @@ const (
 )
 
 type ValidationService struct {
-	repo repository.IRepo
+	repo repositorer
 }
 
-func NewValidationService(repo repository.IRepo) ValidationService {
+func NewValidationService(repo repositorer) ValidationService {
 	return ValidationService{
 		repo: repo,
 	}
