@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"auth/internal/logger"
+	"auth/internal/models"
 	"auth/internal/request"
 	"auth/internal/response"
 	"context"
@@ -11,48 +12,49 @@ import (
 )
 
 // validation Інтерфейс сервіса реєстрації.
-type validator interface {
+type Validator interface {
 	ValidateRegister(ctx context.Context, r request.AuthRequest) ([]string, error)
 	ValidateLogin(ctx context.Context, r request.AuthRequest) ([]string, error)
 	ValidateRetrospective(ctx context.Context, r request.RetrospectiveRequest) (bool, error)
+	ValidateClient(ctx context.Context, m models.Client) error
 }
 
 // registrator Інтерфейс сервіса реєстрації.
-type registrator interface {
+type Registrator interface {
 	Register(ctx context.Context, r request.AuthRequest) error
 }
 
 // login Інтерфейс сервіса логіна.
-type loginer interface {
+type Loginer interface {
 	Login(ctx context.Context, r request.AuthRequest) (*string, error)
 }
 
 // AuthController контролер аутентифікації.
 type AuthController struct {
-	validation validator
-	register   registrator
-	login      loginer
+	validation Validator
+	register   Registrator
+	login      Loginer
 }
 
 // ConfigAuthController Колбек для налаштування контролера.
 type ConfigAuthController func(c *AuthController)
 
 // WithValidationService Повертає колбек ConfigAuthController.
-func WithValidationService(s validator) func(c *AuthController) {
+func WithValidationService(s Validator) func(c *AuthController) {
 	return func(c *AuthController) {
 		c.validation = s
 	}
 }
 
 // WithRegisterService Повертає колбек ConfigAuthController.
-func WithRegisterService(s registrator) func(c *AuthController) {
+func WithRegisterService(s Registrator) func(c *AuthController) {
 	return func(c *AuthController) {
 		c.register = s
 	}
 }
 
 // WithLoginService Повертає колбек ConfigAuthController.
-func WithLoginService(s loginer) func(c *AuthController) {
+func WithLoginService(s Loginer) func(c *AuthController) {
 	return func(c *AuthController) {
 		c.login = s
 	}

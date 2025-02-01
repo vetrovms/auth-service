@@ -6,6 +6,7 @@ import (
 	"auth/internal/database/connection"
 	"auth/internal/database/repository"
 	"auth/internal/logger"
+	"auth/internal/middleware"
 	"auth/internal/services"
 
 	_ "auth/docs"
@@ -51,10 +52,12 @@ func main() {
 	)
 
 	app := fiber.New()
+	app.Get("/swagger/*", swagger.HandlerDefault)
+
+	app.Use(middleware.ClientNew(middleware.Config{Service: &vs}))
 	app.Post("/register", controller.Register)
 	app.Post("/login", controller.Login)
 	app.Post("/retrospective", controller.Retrospective)
-	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	logger.Log().Fatal(app.Listen(":" + config.NewEnv().WebPort))
 }

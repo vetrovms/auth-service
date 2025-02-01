@@ -11,4 +11,5 @@ type repositorer interface {
 	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 	UserExistsById(ctx context.Context, id int) (bool, error)
 	Save(ctx context.Context, user models.User) error
+	GetClientByClientId(ctx context.Context, clientId string) (*models.Client, error)
 }

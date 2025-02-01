@@ -41,6 +41,13 @@ func (r *Repo) GetUserByEmail(ctx context.Context, email string) (*models.User, 
 	return &user, err
 }
 
+// GetClientById Повертає клієнта за client_id.
+func (r *Repo) GetClientByClientId(ctx context.Context, client_id string) (*models.Client, error) {
+	var client models.Client
+	err := r.db.WithContext(ctx).Where("client_id", client_id).Find(&client).Error
+	return &client, err
+}
+
 // Save Зберігає користувача.
 func (r *Repo) Save(ctx context.Context, user models.User) error {
 	return r.db.WithContext(ctx).Save(&user).Error

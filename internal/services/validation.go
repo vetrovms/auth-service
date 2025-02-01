@@ -3,6 +3,7 @@ package services
 import (
 	"auth/internal/config"
 	"auth/internal/logger"
+	"auth/internal/models"
 	"auth/internal/request"
 	"context"
 	"errors"
@@ -27,7 +28,8 @@ const (
 
 // Публічні константи
 const (
-	SomethingWentWrongMsg = "щось пішло не так, спробуйте пізніше"
+	SomethingWentWrongMsg  = "щось пішло не так, спробуйте пізніше"
+	WrongClientCredentials = "невірний ключ або секрет клієнта"
 )
 
 type ValidationService struct {
@@ -98,6 +100,25 @@ func (v *ValidationService) ValidateRetrospective(ctx context.Context, r request
 	}
 
 	return false, nil
+}
+
+func (v *ValidationService) ValidateClient(ctx context.Context, m models.Client) error {
+	msgs := validate(m)
+	if msgs != nil {
+		return errors.New(WrongClientCredentials)
+	}
+
+	client, err := v.repo.GetClientByClientId(ctx, m.ClientId)
+	if err != nil {
+		logger.Log().Warn(err)
+		return errors.New(SomethingWentWrongMsg)
+	}
+
+	if client == nil || client.ClientSecret != m.ClientSecret {
+		return errors.New(WrongClientCredentials)
+	}
+
+	return nil
 }
 
 func validate(r interface{}) []string {
